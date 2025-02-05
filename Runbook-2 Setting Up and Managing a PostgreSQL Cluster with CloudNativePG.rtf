@@ -1,0 +1,452 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Bold;\f1\froman\fcharset0 Times-Roman;\f2\fmodern\fcharset0 Courier;
+\f3\fnil\fcharset0 Menlo-Regular;\f4\fswiss\fcharset0 Arial-BoldMT;\f5\fswiss\fcharset0 ArialMT;
+\f6\fnil\fcharset0 HelveticaNeue;\f7\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red164\green8\blue3;\red0\green0\blue0;\red0\green0\blue233;
+\red109\green109\blue109;\red85\green142\blue40;\red253\green128\blue8;\red164\green8\blue3;\red0\green0\blue0;
+\red253\green128\blue8;\red47\green180\blue29;\red159\green160\blue28;\red38\green38\blue38;\red255\green255\blue255;
+\red46\green111\blue253;}
+{\*\expandedcolortbl;;\cssrgb\c71055\c10387\c0;\cssrgb\c0\c0\c0;\cssrgb\c0\c0\c93333;
+\cssrgb\c50196\c50196\c50196;\cssrgb\c39975\c61335\c20601;\cssrgb\c100000\c57637\c0;\cssrgb\c71055\c10387\c0;\csgray\c0;
+\cssrgb\c100000\c57637\c0;\cssrgb\c20241\c73898\c14950;\cssrgb\c68469\c68012\c14211;\cssrgb\c20000\c20000\c20000;\cssrgb\c100000\c100000\c100000;
+\cssrgb\c22750\c53231\c99501;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid1\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww35640\viewh21840\viewkind0
+\deftab720
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs44 \cf2 \expnd0\expndtw0\kerning0
+\
+Prerequisites\
+==========\cf0 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0
+\f1\b0\fs40 \cf0 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+Kubernetes cluster with 
+\f2\fs42 kubectl
+\f1\fs40  configured.\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+CloudNativePG operator installed (refer to {\field{\*\fldinst{HYPERLINK "https://cloudnative-pg.io/documentation/1.25/quickstart/"}}{\fldrslt \cf4 \ul \ulc4 CloudNativePG Documentation}}).\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+Access to the GitHub repository for CloudNativePG plugin installation.\
+\pard\pardeftab720\partightenfactor0
+\cf5 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs44 \cf6 Step 1: Create a Cluster Configuration File\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs40 \cf0 Save the cluster configuration YAML file at the specified location:
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf7 cat <<EOF | sudo tee /Users/swapnilsuryawanshi/Desktop/cnp-yaml/runbook-cnp/cluster-example.yaml\cf0 \
+apiVersion: postgresql.cnpg.io/v1\
+kind: Cluster\
+metadata:\
+  name: cluster-example\
+spec:\
+  instances: 3\
+  storage:\
+    size: 1Gi\
+EOF\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs44 \cf6 Step 2: Deploy the Cluster\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs40 \cf0 Apply the YAML file to create the cluster:
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf7 kubectl apply -f /Users/swapnilsuryawanshi/Desktop/cnp-yaml/runbook-cnp/cluster-example.yaml\cf0 \
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs44 \cf6 Step 3: Verify Pods\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs40 \cf0 Check the status of the cluster's pods:
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf7 kubectl get pods -L role\cf0 \
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\fs40 \cf0 Expected output:
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf0 NAME                READY   STATUS    RESTARTS   AGE   ROLE\
+cluster-example-1   1/1     Running   0          50s   primary\
+cluster-example-2   1/1     Running   0          30s   replica\
+cluster-example-3   1/1     Running   0          12s   replica\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs40 \cf5 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs44 \cf6 Step 4: Install the CloudNativePG Plugin\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs40 \cf0 Install the CloudNativePG 
+\f2\fs42 kubectl
+\f1\fs40  plugin for easier management:
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf7 curl -sSfL https://github.com/cloudnative-pg/cloudnative-pg/raw/main/hack/install-cnpg-plugin.sh | sudo sh -s -- -b /usr/local/bin\cf0 \
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\fs40 \cf0 Verify the installation:
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf0 kubectl cnpg version\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs40 \cf5 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs44 \cf6 Step 5: Check Cluster Status\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs40 \cf0 Use the plugin to verify the cluster's status:
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf7 kubectl cnpg status cluster-example\cf0 \
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\fs40 \cf0 Expected output:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+
+\f2\fs36 \cf0 \kerning1\expnd0\expndtw0 Cluster Summary\
+Name                 default/cluster-example\
+System ID:           7459293290899460124\
+PostgreSQL Image:    ghcr.io/cloudnative-pg/postgresql:17.2\
+Primary instance:    cluster-example-1\
+Primary start time:  2025-01-13 07:07:44 +0000 UTC (uptime 42m23s)\
+Status:              Cluster in healthy state \
+Instances:           3\
+Ready instances:     3\
+Size:                142M\
+Current Write LSN:   0/8000000 (Timeline: 1 - WAL File: 000000010000000000000008)\
+\
+Continuous Backup status\
+Not configured\
+\
+Streaming Replication status\
+Replication Slots Enabled\
+Name               Sent LSN   Write LSN  Flush LSN  Replay LSN  Write Lag  Flush Lag  Replay Lag  State      Sync State  Sync Priority  Replication Slot\
+----               --------   ---------  ---------  ----------  ---------  ---------  ----------  -----      ----------  -------------  ----------------\
+cluster-example-2  0/8000000  0/8000000  0/8000000  0/8000000   00:00:00   00:00:00   00:00:00    streaming  async       0              active\
+cluster-example-3  0/8000000  0/8000000  0/8000000  0/8000000   00:00:00   00:00:00   00:00:00    streaming  async       0              active\
+\
+Instances status\
+Name               Current LSN  Replication role  Status  QoS         Manager Version  Node\
+----               -----------  ----------------  ------  ---         ---------------  ----\
+cluster-example-1  0/8000000    Primary           OK      BestEffort  1.25.0           cnpg-1.25.0-control-plane\
+cluster-example-2  0/8000000    Standby (async)   OK      BestEffort  1.25.0           cnpg-1.25.0-control-plane\
+cluster-example-3  0/8000000    Standby (async)   OK      BestEffort  1.25.0           cnpg-1.25.0-control-plane\expnd0\expndtw0\kerning0
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs40 \cf5 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs44 \cf6 Step 6: Connect to the Primary Instance\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs40 \cf0 Connect to the primary PostgreSQL instance:
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf7 kubectl cnpg psql cluster-example\cf0 \
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs44 \cf6 Step 7: Verify Replication Status\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs40 \cf0 Run the following query to check replication status:
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf7 SELECT * FROM pg_stat_replication;\cf0 \
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\fs40 \cf0 Expected output:
+\f2\fs42 \kerning1\expnd0\expndtw0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+\cf0 -[ RECORD 1 ]----+------------------------------\
+pid              | 347\
+usesysid         | 16386\
+usename          | streaming_replica\
+application_name | cluster-example-2\
+client_addr      | 10.244.0.11\
+client_hostname  | \
+client_port      | 34810\
+backend_start    | 2025-01-13 07:08:04.680452+00\
+backend_xmin     | \
+state            | streaming\
+sent_lsn         | 0/8000000\
+write_lsn        | 0/8000000\
+flush_lsn        | 0/8000000\
+replay_lsn       | 0/8000000\
+write_lag        | \
+flush_lag        | \
+replay_lag       | \
+sync_priority    | 0\
+sync_state       | async\
+reply_time       | 2025-01-13 07:51:42.422137+00\
+-[ RECORD 2 ]----+------------------------------\
+pid              | 610\
+usesysid         | 16386\
+usename          | streaming_replica\
+application_name | cluster-example-3\
+client_addr      | 10.244.0.14\
+client_hostname  | \
+client_port      | 59632\
+backend_start    | 2025-01-13 07:08:22.80206+00\
+backend_xmin     | \
+state            | streaming\
+sent_lsn         | 0/8000000\
+write_lsn        | 0/8000000\
+flush_lsn        | 0/8000000\
+replay_lsn       | 0/8000000\
+write_lag        | \
+flush_lag        | \
+replay_lag       | \
+sync_priority    | 0\
+sync_state       | async
+\f1\fs40 \expnd0\expndtw0\kerning0
+\
+\pard\pardeftab720\partightenfactor0
+\cf5 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs44 \cf6 Step 8: Connect to a Replica Instance\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs40 \cf0 Connect to a replica instance to verify read-only status:
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf7 kubectl cnpg psql cluster-example --replica\cf0 \
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\fs40 \cf0 Run this query to confirm recovery mode (read-only state):
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf7 SELECT pg_is_in_recovery();\cf0 \
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\fs40 \cf0 Expected output:
+\f2\fs42 \
+\pard\pardeftab720\partightenfactor0
+\cf0  pg_is_in_recovery \
+-------------------\
+ t\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs40 \cf5 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs44 \cf0 Additional Commands\
+\pard\pardeftab720\sa319\partightenfactor0
+
+\fs40 \cf0 Restart Cluster
+\f2\b0\fs42 : kubectl cnpg restart cluster-example\
+
+\f0\b\fs40 Reload Cluster Configuration: 
+\f2\b0\fs42 kubectl cnpg reload cluster-example\
+
+\f0\b\fs40 Promote Replica to Primary: 
+\f2\b0\fs42 kubectl cnpg promote cluster-example-<replica-name>\
+
+\f0\b\fs40 Destroy Cluster: 
+\f2\b0\fs42 kubectl cnpg destroy cluster-example\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs50 \cf8 Create a Cluster Namespace-wise\
+===========================
+\f2\b0\fs42 \cf0 \
+\pard\pardeftab720\sa319\partightenfactor0
+\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf9 \kerning1\expnd0\expndtw0 \CocoaLigature0 % \cf7 kubectl namespace ns test\cf9 \
+namespace/test created\cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\cf9 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+\
+% \cf7 kubectl get namespace\cf9 \
+NAME                 STATUS   AGE\
+cnpg-system          Active   8d\
+default              Active   8d\
+kube-node-lease      Active   8d\
+kube-public          Active   8d\
+kube-system          Active   8d\
+local-path-storage   Active   8d\
+test                 Active   34s\
+\
+\
+% \cf10 \expnd0\expndtw0\kerning0
+\CocoaLigature1 cat <<EOF | sudo tee /Users/swapnilsuryawanshi/Desktop/cnp-yaml/runbook-cnp/cluster-example1.yaml\cf0 \
+\cf9 \kerning1\expnd0\expndtw0 \CocoaLigature0 apiVersion: postgresql.cnpg.io/v1\
+kind: Cluster\
+metadata:\
+  name: cluster-example\
+  namespace: test\
+spec:\
+  instances: 2\
+  storage:\
+    size: 1Gi\cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\pardeftab720\partightenfactor0
+\cf0 EOF\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf9 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+% \cf7 kubectl get pods -L role -n test\
+\cf9 \
+NAME                READY   STATUS    RESTARTS   AGE   ROLE\
+cluster-example-1   1/1     Running   0          51s   primary\
+cluster-example-2   1/1     Running   0          28s   replica\
+\
+% \cf7 kubectl cnpg status cluster-example -n test\cf9 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf11 Cluster Summary\cf9 \
+Name                 test/cluster-example\
+System ID:           7462369303492276252\
+PostgreSQL Image:    ghcr.io/cloudnative-pg/postgresql:17.2\
+Primary instance:    cluster-example-1\
+Primary start time:  2025-01-21 14:04:15 +0000 UTC (uptime 2m10s)\
+Status:              \cf11 Cluster in healthy state\cf9  \
+Instances:           \cf11 2\cf9 \
+Ready instances:     \cf11 2\cf9 \
+Size:                94M\
+Current Write LSN:   0/4050170 (Timeline: 1 - WAL File: 000000010000000000000004)\
+\
+\cf11 Continuous Backup status\cf9 \
+\cf12 Not configured\cf9 \
+\
+\cf11 Streaming Replication status\cf9 \
+\cf12 Replication Slots Enabled\cf9 \
+Name               Sent LSN   Write LSN  Flush LSN  Replay LSN  Write Lag  Flush Lag  Replay Lag  State      Sync State  Sync Priority  Replication Slot\
+----               --------   ---------  ---------  ----------  ---------  ---------  ----------  -----      ----------  -------------  ----------------\
+cluster-example-2  0/4050170  0/4050170  0/4050170  0/4050170   00:00:00   00:00:00   00:00:00    streaming  async       0              active\
+\
+\cf11 Instances status\cf9 \
+Name               Current LSN  Replication role  Status  QoS         Manager Version  Node\
+----               -----------  ----------------  ------  ---         ---------------  ----\
+cluster-example-1  0/4050170    Primary           OK      BestEffort  1.25.0           cnpg-1.25.0-control-plane\
+cluster-example-2  0/4050170    Standby (async)   OK      BestEffort  1.25.0           cnpg-1.25.0-control-plane\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f3\fs22 \
+
+\f2\fs42 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs50 \cf2 Scale up and Scale Down\
+===========================
+\f2\b0\fs42 \cf0 \
+
+\f0\b\fs50 \cf3 Scale Down: 
+\f2\b0\fs42 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf9 \kerning1\expnd0\expndtw0 \CocoaLigature0 % \cf7 kubectl get pods -L role\
+\cf9 \
+NAME                READY   STATUS    RESTARTS       AGE   ROLE\
+cluster-example-1   1/1     Running   1 (5d1h ago)   8d    primary\
+cluster-example-2   1/1     Running   1 (5d1h ago)   8d    replica\
+cluster-example-3   1/1     Running   1 (5d1h ago)   8d    replica\
+\
+\
+% \cf7 kubectl scale --replicas=1 cluster/cluster-example\cf9  \
+cluster.postgresql.cnpg.io/cluster-example scaled\
+\
+% \cf7 kubectl get pods -L role\cf9 \
+NAME                READY   STATUS    RESTARTS       AGE   ROLE\
+cluster-example-1   1/1     Running   1 (5d1h ago)   8d    primary
+\f3\fs22 \
+\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs50 \cf3 \expnd0\expndtw0\kerning0
+\CocoaLigature1 Scale up :
+\f3\b0\fs22 \cf9 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f2\fs42 % \cf10 kubectl get pods -L role\cf9 \
+NAME                READY   STATUS    RESTARTS       AGE   ROLE\
+cluster-example-1   1/1     Running   1 (5d1h ago)   8d    primary\
+
+\f3\fs22 \
+
+\f2\fs42 \cf3 % \cf7 kubectl scale --replicas=4 cluster/cluster-example\cf3  \
+cluster.postgresql.cnpg.io/cluster-example scaled\
+\
+% \cf7 kubectl get pods -L role\cf3    \
+NAME                READY   STATUS    RESTARTS       AGE     ROLE\
+cluster-example-1   1/1     Running   1 (5d1h ago)   8d      primary\
+cluster-example-4   1/1     Running   0              5m8s    replica\
+cluster-example-5   1/1     Running   0              4m47s   replica\
+cluster-example-6   1/1     Running   0              4m25s   replica
+\f3\fs22 \cf9 \
+\
+
+\f2\fs42 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\pardeftab720\partightenfactor0
+
+\f4\b\fs66 \cf8 \kerning1\expnd0\expndtw0 \CocoaLigature0 The task to complete:\
+==================
+\f5\b0\fs42 \cf9 \
+\
+1. Create the cluster with the name 
+\f2 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 cluster-test
+\f5 \cf9 \kerning1\expnd0\expndtw0 \CocoaLigature0  
+\f2 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 with 
+\f4\b \cf9 \kerning1\expnd0\expndtw0 \CocoaLigature0 2
+\f5\b0  instance\
+\
+2. Create the namespace and cluster with your name with 
+\f4\b 4
+\f5\b0  instance
+\f2 \cf10 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+
+\f5 \cf9 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+3. Test Scale up command (with 4 instances) (use cluster created in task 1)\
+\
+4. Test  scale down command (with 2 instances)  (use cluster created in task 2)\
+\
+5. Execute the 
+\f2 \cf10 \expnd0\expndtw0\kerning0
+\CocoaLigature1 kubectl cnpg \cf10 \kerning1\expnd0\expndtw0 \CocoaLigature0 --help\cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1  
+\f5 \cf9 \kerning1\expnd0\expndtw0 \CocoaLigature0  and test all the options\
+\
+6. 
+\f6\fs44 \cf13 \cb14 \expnd0\expndtw0\kerning0
+\CocoaLigature1 Document all results in a text file for verification in the next session.
+\f5\fs42 \cf15 \cb1 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+\
+\pard\pardeftab720\partightenfactor0
+
+\f2 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\pardeftab720\sa319\partightenfactor0
+\cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+
+\f7\fs24 \cf0 \kerning1\expnd0\expndtw0 \
+}

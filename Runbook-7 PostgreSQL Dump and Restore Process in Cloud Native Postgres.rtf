@@ -1,0 +1,211 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 ArialMT;\f1\fswiss\fcharset0 Arial-BoldMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red63\green105\blue30;\red109\green109\blue109;
+\red253\green128\blue8;\red63\green105\blue30;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c30831\c47797\c15540;\cssrgb\c50196\c50196\c50196;
+\cssrgb\c100000\c57637\c0;\cssrgb\c30831\c47797\c15540;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww35640\viewh21840\viewkind0
+\deftab720
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\fs40 \cf0 \expnd0\expndtw0\kerning0
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b \cf3 Step: 1: Deploy the cluster or use the existing cluster:
+\f0\b0 \cf4 \
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+\cf0 \kerning1\expnd0\expndtw0 % 
+\f1\b \cf5 cat <<EOF | sudo tee cluster-example.yaml
+\f0\b0 \cf0 \
+apiVersion: postgresql.cnpg.io/v1\
+kind: Cluster\
+metadata:\
+  name: cluster-example\
+spec:\
+  instances: 3\
+\
+  storage:\
+    size: 1Gi\
+EOF\
+\
+% 
+\f1\b \cf5 kubectl apply -f cluster-example.yaml
+\f0\b0 \cf0 \
+cluster.postgresql.cnpg.io/cluster-example created\
+\
+% 
+\f1\b \cf5 kubectl get pods -L role
+\f0\b0 \cf0 \
+NAME                READY   STATUS    RESTARTS   AGE   ROLE\
+cluster-example-1   1/1     Running   0          50s   primary\
+cluster-example-2   1/1     Running   0          30s   replica\
+cluster-example-3   1/1     Running   0          12s   replica\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b \cf6 \expnd0\expndtw0\kerning0
+Step: 2: \cf3 Check the Status of the Database Cluster\cf6 \
+
+\f0\b0 \cf0 \kerning1\expnd0\expndtw0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\pardirnatural\partightenfactor0
+\cf0 % 
+\f1\b \cf5 kubectl cnpg status cluster-example
+\f0\b0 \cf0 \
+Cluster Summary\
+Name                 default/cluster-example\
+System ID:           7459293290899460124\
+PostgreSQL Image:    ghcr.io/cloudnative-pg/postgresql:17.2\
+Primary instance:    cluster-example-1\
+Primary start time:  2025-01-13 07:07:44 +0000 UTC (uptime 42m23s)\
+Status:              Cluster in healthy state \
+Instances:           3\
+Ready instances:     3\
+Size:                142M\
+Current Write LSN:   0/8000000 (Timeline: 1 - WAL File: 000000010000000000000008)\
+\
+Continuous Backup status\
+Not configured\
+\
+Streaming Replication status\
+Replication Slots Enabled\
+Name               Sent LSN   Write LSN  Flush LSN  Replay LSN  Write Lag  Flush Lag  Replay Lag  State      Sync State  Sync Priority  Replication Slot\
+----               --------   ---------  ---------  ----------  ---------  ---------  ----------  -----      ----------  -------------  ----------------\
+cluster-example-2  0/8000000  0/8000000  0/8000000  0/8000000   00:00:00   00:00:00   00:00:00    streaming  async       0              active\
+cluster-example-3  0/8000000  0/8000000  0/8000000  0/8000000   00:00:00   00:00:00   00:00:00    streaming  async       0              active\
+\
+Instances status\
+Name               Current LSN  Replication role  Status  QoS         Manager Version  Node\
+----               -----------  ----------------  ------  ---         ---------------  ----\
+cluster-example-1  0/8000000    Primary           OK      BestEffort  1.25.0           cnpg-1.25.0-control-plane\
+cluster-example-2  0/8000000    Standby (async)   OK      BestEffort  1.25.0           cnpg-1.25.0-control-plane\
+cluster-example-3  0/8000000    Standby (async)   OK      BestEffort  1.25.0           cnpg-1.25.0-control-plane\
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b \cf3 \expnd0\expndtw0\kerning0
+Step 3: Log in to the Primary Database Pod and Create a Database and Table
+\f0\b0 \cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 swapnilsuryawanshi@LAPTOP385PNIN runbook-cnp % \cf5 kubectl exec -it cluster-example-1 -- /bin/bash\cf0 \
+Defaulted container "postgres" out of: postgres, bootstrap-controller (init)\
+\
+postgres@cluster-example-1:/$ \cf5 psql\cf0 \
+psql (17.2 (Debian 17.2-1.pgdg110+1))\
+Type "help" for help.\
+\
+postgres=# \cf5 create database swapnil;\cf0 \
+CREATE DATABASE\
+\
+postgres=# \\c \cf5 swapnil postgres \cf0 \
+You are now connected to database "swapnil" as user "postgres".\
+\
+swapnil=# \cf5 create table swapnil (id int);\cf0 \
+CREATE TABLE\
+\
+swapnil=# \cf5 insert into swapnil values (generate_series(1, 1000));\cf0 \
+INSERT 0 1000\
+\
+swapnil=# \cf5 \\dt+\cf0 \
+                                    List of relations\
+ Schema |  Name   | Type  |  Owner   | Persistence | Access method | Size  | Description \
+--------+---------+-------+----------+-------------+---------------+-------+-------------\
+ public | swapnil | table | postgres | permanent   | heap          | 64 kB | \
+(1 row)\
+\
+swapnil=# \cf5 select count(*) from swapnil;\cf0 \
+ count \
+-------\
+  1000\
+(1 row)\
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 \
+
+\f1\b \cf3 Step 4: Take a Backup of the Database
+\f0\b0 \cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 swapnilsuryawanshi@LAPTOP385PNIN runbook-cnp % \cf5 kubectl exec cluster-example-1 -c postgres -- pg_dump -Fc -d swapnil -C > swapnil.dump\cf0 \
+\
+swapnilsuryawanshi@LAPTOP385PNIN runbook-cnp %\cf5  ls -l swapnil.dump\cf0 \
+\
+-rw-r--r--  1 swapnilsuryawanshi  staff  3131 Feb  1 18:36 swapnil.dump\
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b \cf3 Step 5: Drop the Database
+\f0\b0 \cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 swapnilsuryawanshi@LAPTOP385PNIN runbook-cnp %\cf5  kubectl exec -it cluster-example-1 -- /bin/bash\cf0 \
+Defaulted container "postgres" out of: postgres, bootstrap-controller (init)\
+\
+postgres@cluster-example-1:/$ \cf5 psql\cf0  \
+psql (17.2 (Debian 17.2-1.pgdg110+1))\
+Type "help" for help.\
+\
+postgres=# \cf5 drop database swapnil;\cf0 \
+DROP DATABASE\
+\
+postgres=# \cf5 vacuum analyze;\cf0 \
+VACUUM\
+postgres=# \cf5 \\q\cf0 \
+\
+postgres@cluster-example-1:/$ \cf5 exit\cf0 \
+exit\
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 \
+
+\f1\b \cf3 Step 6: Restore the Database
+\f0\b0 \cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 swapnilsuryawanshi@LAPTOP385PNIN runbook-cnp % \cf5 kubectl exec -i cluster-example-1 -c postgres -- pg_restore -d app --verbose --create < swapnil.dump \cf0 \
+pg_restore: connecting to database for restore\
+pg_restore: creating DATABASE "swapnil"\
+pg_restore: connecting to new database "swapnil"\
+pg_restore: creating TABLE "public.swapnil"\
+pg_restore: processing data for table "public.swapnil"\
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b \cf3 Step 7: Verify the Restore
+\f0\b0 \cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 swapnilsuryawanshi@LAPTOP385PNIN runbook-cnp % \cf5 kubectl exec -it cluster-example-1 -- /bin/bash\cf0 \
+Defaulted container "postgres" out of: postgres, bootstrap-controller (init)\
+\
+postgres@cluster-example-1:/$ \cf5 psql\cf0 \
+psql (17.2 (Debian 17.2-1.pgdg110+1))\
+Type "help" for help.\
+\
+postgres=# \cf5 \\c swapnil\cf0 \
+You are now connected to database "swapnil" as user "postgres".\
+\
+swapnil=# \cf5 \\dt+\cf0 \
+                                    List of relations\
+ Schema |  Name   | Type  |  Owner   | Persistence | Access method | Size  | Description \
+--------+---------+-------+----------+-------------+---------------+-------+-------------\
+ public | swapnil | table | postgres | permanent   | heap          | 64 kB | \
+(1 row)\
+\
+swapnil=# \cf5 select count(*) from swapnil;\cf0 \
+ count \
+-------\
+  1000\
+(1 row)\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\pard\tx14831\pardeftab720\sa240\partightenfactor0
+
+\f1\b \cf0 Expected Result:
+\f0\b0  The database should contain the restored table with 1000 records.\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b \cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+\cf6 \
+\
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b0 \cf0 \
+}

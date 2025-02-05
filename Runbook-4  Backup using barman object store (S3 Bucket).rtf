@@ -1,0 +1,522 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Bold;\f1\fnil\fcharset0 HelveticaNeue-Bold;\f2\fnil\fcharset0 HelveticaNeue;
+\f3\froman\fcharset0 Times-Roman;\f4\fnil\fcharset0 LucidaGrande;\f5\fmodern\fcharset0 Courier;
+\f6\fmodern\fcharset0 Courier-Bold;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red168\green24\blue75;\red255\green255\blue255;
+\red67\green67\blue67;\red245\green249\blue251;\red85\green142\blue40;\red253\green128\blue8;\red109\green109\blue109;
+}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c72439\c17643\c36556;\cssrgb\c100000\c100000\c100000;
+\cssrgb\c33333\c33333\c33333;\cssrgb\c96863\c98039\c98824;\cssrgb\c39975\c61335\c20601;\cssrgb\c100000\c57637\c0;\cssrgb\c50196\c50196\c50196;
+}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid1\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid101\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid102\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat3\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid201\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid3}
+{\list\listtemplateid4\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid301\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid302\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listname ;}\listid4}
+{\list\listtemplateid5\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat4\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid401\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid5}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}{\listoverride\listid5\listoverridecount0\ls5}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww35640\viewh21840\viewkind0
+\deftab720
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs40 \cf0 \expnd0\expndtw0\kerning0
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\fs44 \cf3 \cb4 Prerequisites Before Backup:
+\f2\b0\fs32 \cf5 \
+
+\f3\fs38 To take the backup of any cluster, first, you have to set up\'a0the storage for the cluster so that we can archive the backup files and WAL files.\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0\cf5 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
+Request access to Amazon AWS.\cb1 \
+\ls1\ilvl0\cb4 \kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
+Create an IAM role, and generate ACCESS_KEY_ID and ACCESS_SECRET_KEY.\cb1 \
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls2\ilvl1
+\fs34 \cf5 \cb6 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u8259 
+\f3 	}\expnd0\expndtw0\kerning0
+ACCESS_KEY_ID:
+\fs38 \cb4 \'a0the ID of the access key that will be used to upload files into S3\cb1 \
+\ls2\ilvl1
+\fs34 \cb6 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u8259 
+\f3 	}\expnd0\expndtw0\kerning0
+ACCESS_SECRET_KEY:
+\fs38 \cb4 \'a0the secret part of the access key mentioned above\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls3\ilvl0\cf5 \cb4 \kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
+Create a bucket and provide it access to external apps. You need the below complete permissions:\cb1 \
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls4\ilvl1\cf5 \cb4 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u8259 
+\f3 	}\expnd0\expndtw0\kerning0
+\'93s3:AbortMultipartUpload\'94\cb1 \
+\ls4\ilvl1\cb4 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u8259 
+\f3 	}\expnd0\expndtw0\kerning0
+\'93s3:DeleteObject\'94\cb1 \
+\ls4\ilvl1\cb4 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u8259 
+\f3 	}\expnd0\expndtw0\kerning0
+\'93s3:GetObject\'94\cb1 \
+\ls4\ilvl1\cb4 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u8259 
+\f3 	}\expnd0\expndtw0\kerning0
+\'93s3:ListBucket\'94\cb1 \
+\ls4\ilvl1\cb4 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u8259 
+\f3 	}\expnd0\expndtw0\kerning0
+\'93s3:PutObject\'94\cb1 \
+\ls4\ilvl1\cb4 \kerning1\expnd0\expndtw0 {\listtext	
+\f4 \uc0\u8259 
+\f3 	}\expnd0\expndtw0\kerning0
+\'93s3:PutObjectTagging\'94\cb1 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls5\ilvl0\cf5 \cb4 \kerning1\expnd0\expndtw0 {\listtext	4	}\expnd0\expndtw0\kerning0
+Verify access from external sources.
+\f2\fs32 \cb1 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b \cf5 \cb4 \
+Note:
+\f2\b0 \'a0The steps above will vary according to the storage you are using. Here, we are showing an example of an AWS S3 bucket to store the WaL(s) files and backup(s).\
+
+\f0\b\fs40 \cf0 \cb1 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\fs36 \cf7 Step 1: Create Namespace for Backup Cluster\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\b0 \cf0 This step creates a new Kubernetes namespace called 
+\f5\fs38 backup
+\f3\fs36  which will be used for backup-related resources.
+\f0\b \
+Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl create namespace backup\cf0 \
+\
+namespace/backup created\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 2: Create an AWS Secret in the Backup Namespace\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\b0 \cf0 This step creates an AWS secret in the 
+\f5\fs38 backup
+\f3\fs36  namespace with 
+\f5\fs38 ACCESS_KEY_ID
+\f3\fs36  and 
+\f5\fs38 ACCESS_SECRET_KEY
+\f3\fs36 , which will be used for connecting to AWS S3 for backups.
+\f0\b \
+Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl create secret generic aws-creds \\\
+--from-literal=ACCESS_KEY_ID=xxxxxxxxx7BO57CN3Gxxxxx \\\
+--from-literal=ACCESS_SECRET_KEY=xxxxxxxxhMMBTW7sF234utAjVGrS+xxxxxxxx -n backup\cf0 \
+\
+secret/aws-creds created\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 3: Verify the Secret Creation\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\b0 \cf0 This command verifies that the AWS secret was created successfully in the 
+\f5\fs38 backup
+\f3\fs36  namespace.
+\f0\b \
+Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl get secret -n backup\cf0 \
+\
+NAME        TYPE     DATA   AGE\
+aws-creds   Opaque   2      10s\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 4: Create Cluster Manifest for Backup\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\b0 \cf0 In this step, the cluster manifest (
+\f5\fs38 backupcluster.yaml
+\f3\fs36 ) is created, defining the cluster\'92s backup configuration, such as the destination S3 path and AWS credentials.
+\f0\b \
+Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 % vi backupcluster.yaml\cf0 \
+\
+apiVersion: postgresql.cnpg.io/v1\
+kind: Cluster\
+metadata:\
+  name: cluster-backup\
+  namespace: backup\
+spec:\
+  logLevel: info\
+  startDelay: 30\
+  stopDelay: 30\
+  nodeMaintenanceWindow:\
+    inProgress: false\
+    reusePVC: true\
+  backup:\
+    barmanObjectStore:\
+      destinationPath: 's3://swapnil-backup/test/'\
+      s3Credentials:\
+        accessKeyId:\
+          key: ACCESS_KEY_ID\
+          name: aws-creds\
+        inheritFromIAMRole: false\
+        secretAccessKey:\
+          key: ACCESS_SECRET_KEY\
+          name: aws-creds\
+  enableSuperuserAccess: true\
+  monitoring:\
+    disableDefaultQueries: false\
+    enablePodMonitor: false\
+  minSyncReplicas: 0\
+  postgresGID: 26\
+  replicationSlots:\
+    highAvailability:\
+      slotPrefix: _cnp_\
+    updateInterval: 30\
+  primaryUpdateMethod: switchover\
+  postgresUID: 26\
+  walStorage:\
+    resizeInUseVolumes: true\
+    size: 1Gi\
+  maxSyncReplicas: 0\
+  switchoverDelay: 40000000\
+  storage:\
+    resizeInUseVolumes: true\
+    size: 2Gi\
+  primaryUpdateStrategy: unsupervised\
+  instances: 2\
+  imagePullPolicy: Always\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 5: Apply the Cluster Manifest\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl apply -f backupcluster.yaml\cf0 \
+\
+cluster.postgresql.cnpg.io/cluster-backup created\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 6: Verify Pod Status\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl get pods -n backup -L pod\cf0 \
+\
+NAME               READY   STATUS    RESTARTS   AGE     POD\
+cluster-backup-1   1/1     Running   0          2m16s   \
+cluster-backup-2   1/1     Running   0          109s    \
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 7: Verify S3 Bucket for Backup Folder\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\b0 \cf0 This checks if the folder for the backup cluster (
+\f5\fs38 cluster-backup
+\f3\fs36 ) exists in the S3 bucket and confirms that it is empty initially.
+\f0\b \
+Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 aws s3 ls s3://swapnil-backup/test/ --human-readable --summarize\cf0 \
+\
+                           PRE cluster-backup/\
+2025-01-16 18:28:31    0 Bytes \
+\
+Total Objects: 1\
+   Total Size: 0 Bytes\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 8: Verify Cluster Status and WAL Archiving\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\b0 \cf0 Verifies the cluster status, ensuring it is healthy and checks if WAL archiving is working correctly.
+\f0\b \
+Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl cnpg status cluster-backup -n backup\cf0 \
+\
+Cluster Summary\
+Name                 backup/cluster-backup\
+System ID:           7463110619807920157\
+PostgreSQL Image:    ghcr.io/cloudnative-pg/postgresql:17.2\
+Primary instance:    cluster-backup-1\
+Primary start time:  2025-01-23 14:00:59 +0000 UTC (uptime 29s)\
+Status:              Cluster in healthy state \
+Instances:           1\
+Ready instances:     1\
+Size:                62M\
+Current Write LSN:   0/20114B8 (Timeline: 1 - WAL File: 000000010000000000000002)\
+\
+Continuous Backup status\
+First Point of Recoverability:  Not Available\
+\pard\pardeftab720\partightenfactor0
+
+\f6\b \cf0 Working WAL archiving:          OK
+\f5\b0 \
+WALs waiting to be archived:    0\
+Last Archived WAL:              000000010000000000000001   @   2025-01-23T14:01:25.58927Z\
+Last Failed WAL:                -\
+\
+Streaming Replication status\
+Not configured\
+\
+Instances status\
+Name              Current LSN  Replication role  Status  QoS         Manager Version  Node\
+----              -----------  ----------------  ------  ---         ---------------  ----\
+cluster-backup-1  0/20114B8    Primary           OK      BestEffort  1.25.0           cnpg-1.25.0-control-plane                -\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 9: Take a Backup Using CNPG Plugin\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\b0 \cf0 This initiates a backup for the 
+\f5\fs38 cluster-backup
+\f3\fs36  cluster using the CNPG plugin.
+\f5\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl cnpg backup cluster-backup -n backup\cf0 \
+\
+backup/cluster-backup-20250123193330 created\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 10: Verify Backup Status\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl get backup -n backup\cf0 \
+\
+swapnilsuryawanshi@LAPTOP385PNIN runbook-cnp % kubectl get backup -n backup\
+NAME                            AGE   CLUSTER          METHOD              PHASE     ERROR\
+cluster-backup-20250123193330   10s   cluster-backup   barmanObjectStore   
+\f6\b running
+\f5\b0    \
+  
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 11: Verify Backup Completion\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 Command:
+\f3\b0 \
+\pard\pardeftab720\partightenfactor0
+
+\f5\fs38 \cf0 \
+\cf8 kubectl get backup -n backup\cf0 \
+                            AGE    CLUSTER          METHOD              PHASE       ERROR\
+cluster-backup-20250123193330   105s   cluster-backup   barmanObjectStore   
+\f6\b completed
+\f5\b0    \
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 12: Verify Backup in S3 Bucket\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 aws s3 ls s3://swapnil-backup/test/cluster-backup/ --human-readable --summarize --recursive\cf0 \
+\
+2025-01-23 19:34:18    1.4 KiB test/cluster-backup/base/20250123T140331/backup.info\
+2025-01-23 19:33:39   31.2 MiB test/cluster-backup/base/20250123T140331/data.tar\
+2025-01-23 19:31:04   16.0 MiB test/cluster-backup/wals/0000000100000000/000000010000000000000001\
+2025-01-23 19:33:34   16.0 MiB test/cluster-backup/wals/0000000100000000/000000010000000000000002\
+2025-01-23 19:33:51   16.0 MiB test/cluster-backup/wals/0000000100000000/000000010000000000000003\
+2025-01-23 19:33:51  348 Bytes test/cluster-backup/wals/0000000100000000/000000010000000000000003.00000028.backup\
+2025-01-23 19:34:05   16.0 MiB test/cluster-backup/wals/0000000100000000/000000010000000000000004\
+\
+Total Objects: 7\
+   Total Size: 95.2 MiB\
+swapnilsuryawanshi@LAPTOP385PNIN runbook-cnp % \
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 13: Verify Cluster Status After Backup\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\b0 \cf0 Checks the cluster status again to confirm that the backup process has updated the First Point of Recoverability and WAL archiving.
+\f0\b \
+Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl cnpg status cluster-backup -n backup\cf0 \
+\
+Cluster Summary\
+Name                 backup/cluster-backup\
+System ID:           7463110619807920157\
+PostgreSQL Image:    ghcr.io/cloudnative-pg/postgresql:17.2\
+Primary instance:    cluster-backup-1\
+Primary start time:  2025-01-23 14:00:59 +0000 UTC (uptime 6m36s)\
+Status:              Cluster in healthy state \
+Instances:           1\
+Ready instances:     1\
+Size:                110M\
+Current Write LSN:   0/50000C8 (Timeline: 1 - WAL File: 000000010000000000000005)\
+\
+Continuous Backup status\
+\pard\pardeftab720\partightenfactor0
+
+\f6\b \cf0 First Point of Recoverability:  2025-01-23T14:03:39Z
+\f5\b0 \
+Working WAL archiving:          OK\
+WALs waiting to be archived:    0\
+Last Archived WAL:              000000010000000000000004   @   2025-01-23T14:04:24.479506Z\
+Last Failed WAL:K\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 14: Take a Backup Using Backup Manifest (Method 2)\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\b0 \cf0 This method creates a backup using a backup manifest (
+\f5\fs38 backup.yaml
+\f3\fs36 ) to define the backup configuration.\
+\pard\pardeftab720\partightenfactor0
+
+\f5\fs38 \cf8 % vi backup.yaml \cf0 \
+\
+apiVersion: postgresql.cnpg.io/v1\
+kind: Backup\
+metadata:\
+  name: pg-full\
+spec:\
+  cluster:\
+    name: cluster-backup
+\f3\fs36 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b \cf0 \
+Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl apply -f backup.yaml -n backup\cf0 \
+\
+backup.postgresql.cnpg.io/pg-full created\
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 15: Verify Backup Status (Method 2)\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\b0 \cf0 Verifies the status of the second backup created using the backup manifest.
+\f0\b \
+Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl get backup -n backup\cf0 \
+\
+swapnilsuryawanshi@LAPTOP385PNIN runbook-cnp % kubectl get backup -n backup   \
+NAME                            AGE    CLUSTER          METHOD              PHASE       ERROR\
+cluster-backup-20250123193330   10m    cluster-backup   barmanObjectStore   completed   \
+pg-full                         2m4s   cluster-backup   barmanObjectStore   completed     \
+\pard\pardeftab720\partightenfactor0
+
+\f3\fs36 \cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 16: Verify Backup Completion in S3 Bucket (Method 2)\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf0 % \cf8 aws s3 ls s3://swapnil-backup/test/cluster-backup/ --human-readable --summarize --recursive\cf0 \
+2025-01-23 19:34:18    1.4 KiB test/cluster-backup/base/20250123T140331/backup.info\
+2025-01-23 19:33:39   31.2 MiB test/cluster-backup/base/20250123T140331/data.tar\
+2025-01-23 19:42:46    1.4 KiB test/cluster-backup/base/20250123T141213/backup.info\
+2025-01-23 19:42:14   31.2 MiB test/cluster-backup/base/20250123T141213/data.tar\
+2025-01-23 19:31:04   16.0 MiB :\
+:\
+:\
+2025-01-23 19:42:18  348 Bytes test/cluster-backup/wals/0000000100000000/000000010000000000000006.00000028.backup\
+2025-01-23 19:42:58   16.0 MiB test/cluster-backup/wals/0000000100000000/000000010000000000000007\
+\
+Total Objects: 13\
+   Total Size: 174.3 MiB
+\f3\fs36 \
+\pard\pardeftab720\partightenfactor0
+\cf9 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 Step 17: Verify Final Cluster Status\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\b0 \cf0 Final verification of the cluster status and continuous backup information.
+\f0\b \
+Command:
+\f5\b0\fs38 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl cnpg status cluster-backup -n backup\cf0 \
+          \
+Cluster Summary\
+Name                 backup/cluster-backup\
+System ID:           7463110619807920157\
+PostgreSQL Image:    ghcr.io/cloudnative-pg/postgresql:17.2\
+Primary instance:    cluster-backup-1\
+Primary start time:  2025-01-23 14:00:59 +0000 UTC (uptime 14m46s)\
+Status:              Cluster in healthy state \
+Instances:           1\
+Ready instances:     1\
+Size:                158M\
+Current Write LSN:   0/80000C8 (Timeline: 1 - WAL File: 000000010000000000000008)\
+\
+Continuous Backup status\
+\pard\pardeftab720\partightenfactor0
+
+\f6\b \cf0 First Point of Recoverability:  2025-01-23T14:03:39Z
+\f5\b0 \
+Working WAL archiving:          OK\
+WALs waiting to be archived:    0\
+Last Archived WAL:              000000010000000000000007   @   2025-01-23T14:13:09.877353Z\
+Last Failed WAL:\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f3\fs36 \cf0 \uc0\u8232 \
+}

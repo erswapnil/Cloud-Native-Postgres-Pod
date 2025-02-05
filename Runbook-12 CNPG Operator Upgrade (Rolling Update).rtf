@@ -1,0 +1,317 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Bold;\f1\fmodern\fcharset0 Courier;\f2\froman\fcharset0 Times-Roman;
+\f3\fmodern\fcharset0 Courier-Bold;}
+{\colortbl;\red255\green255\blue255;\red164\green8\blue3;\red0\green0\blue0;\red63\green105\blue30;
+\red253\green128\blue8;}
+{\*\expandedcolortbl;;\cssrgb\c71055\c10387\c0;\cssrgb\c0\c0\c0;\cssrgb\c30831\c47797\c15540;
+\cssrgb\c100000\c57637\c0;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid1\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+{\info
+{\author Swapnil Suryawanshi}}\paperw11900\paperh16840\margl1440\margr1440\vieww35640\viewh22400\viewkind0
+\deftab720
+\pard\pardeftab720\sa321\partightenfactor0
+
+\f0\b\fs60 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Operator Upgrade: Rolling Update\cf0 \
+\pard\pardeftab720\sa298\partightenfactor0
+
+\fs48 \cf4 1. Create a Kind Cluster
+\fs40 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 kind create cluster --name cnpg-1.24.0 --config kind-config.yaml\cf0 \
+
+\f0\b\fs40 \
+
+\f1\b0\fs38 Creating cluster "cnpg-1.24.0\'94 ...\
+\uc0\u10003  Ensuring node image (kindest/node:v1.32.0) \u55357 \u56764 \
+\uc0\u10003  Preparing nodes \u55357 \u56550  \u55357 \u56550  \u55357 \u56550  \u55357 \u56550   \
+\uc0\u10003  Writing configuration \u55357 \u56540 \
+\uc0\u10003  Starting control-plane \u55357 \u56697 \u65039 \
+\uc0\u10003  Installing CNI \u55357 \u56588 \
+\uc0\u10003  Installing StorageClass \u55357 \u56510 \
+\uc0\u10003  Joining worker nodes \u55357 \u56988 \
+Set kubectl context to "kind-cnpg-1.24.0\'94\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs40 \cf0 Verify Nodes:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 kubectl get nodes\cf0 \
+\
+NAME                        STATUS   ROLES           AGE     VERSION\
+cnpg-1.24.0-control-plane   Ready    control-plane   4m32s   v1.32.0\
+cnpg-1.24.0-worker          Ready    <none>          4m23s   v1.32.0\
+cnpg-1.24.0-worker2         Ready    <none>          4m23s   v1.32.0\
+cnpg-1.24.0-worker3         Ready    <none>          4m23s   v1.32.0\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs48 \cf0 2. Deploy CNPG Operator\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 kubectl apply --server-side -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.24/releases/cnpg-1.24.0.yaml\cf0 \
+\
+namespace/cnpg-system serverside-applied\
+customresourcedefinition.apiextensions.k8s.io/backups.postgresql.cnpg.io serverside-applied\
+customresourcedefinition.apiextensions.k8s.io/clusterimagecatalogs.postgresql.cnpg.io serverside-applied\
+customresourcedefinition.apiextensions.k8s.io/clusters.postgresql.cnpg.io serverside-applied\
+customresourcedefinition.apiextensions.k8s.io/imagecatalogs.postgresql.cnpg.io serverside-applied\
+customresourcedefinition.apiextensions.k8s.io/poolers.postgresql.cnpg.io serverside-applied\
+customresourcedefinition.apiextensions.k8s.io/scheduledbackups.postgresql.cnpg.io serverside-applied\
+serviceaccount/cnpg-manager serverside-applied\
+clusterrole.rbac.authorization.k8s.io/cnpg-manager serverside-applied\
+clusterrolebinding.rbac.authorization.k8s.io/cnpg-manager-rolebinding serverside-applied\
+configmap/cnpg-default-monitoring serverside-applied\
+service/cnpg-webhook-service serverside-applied\
+deployment.apps/cnpg-controller-manager serverside-applied\
+mutatingwebhookconfiguration.admissionregistration.k8s.io/cnpg-mutating-webhook-configuration serverside-applied\
+validatingwebhookconfiguration.admissionregistration.k8s.io/cnpg-validating-webhook-configuration serverside-applied\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs40 \cf0 Verify Deployment:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 kubectl get deployment -n cnpg-system cnpg-controller-manager\cf0 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs40 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf0 NAME                      READY   UP-TO-DATE   AVAILABLE   AGE\
+cnpg-controller-manager   1/1     1            1           28s\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs48 \cf4 3. Install CNPG Plugin
+\fs40 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 curl -sSfL \\  \
+  https://github.com/cloudnative-pg/cloudnative-pg/raw/main/hack/install-cnpg-plugin.sh | \\  \
+  sudo sh -s -- -b /usr/local/bin\cf0 \
+
+\f0\b\fs40 \
+
+\f1\b0\fs38 cloudnative-pg/cloudnative-pg info checking GitHub for latest tag\
+cloudnative-pg/cloudnative-pg info found version: 1.25.0 for v1.25.0/darwin/x86_64\
+cloudnative-pg/cloudnative-pg info installed /usr/local/bin/kubectl-cnpg\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs48 \cf4 4. Deploy PostgreSQL Cluster\cf0 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f2\b0\fs40 \cf5 vi c
+\f1\fs38 \outl0\strokewidth0 luster-example.yaml
+\f0\b\fs40 \cf0 \outl0\strokewidth0 \strokec3 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf0 apiVersion: postgresql.cnpg.io/v1\
+kind: Cluster\
+metadata:\
+  name: cluster-example\
+spec:\
+  instances: 2\
+  storage:\
+    size: 1Gi\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs40 \cf0 Apply Cluster Configuration:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 kubectl apply -f cluster-example.yaml\cf0 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs40 \cf0 \
+Verify Cluster Pods:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 kubectl get pods -L role\cf0 \
+
+\f0\b\fs40 \
+
+\f1\b0\fs38 NAME                READY   STATUS    RESTARTS   AGE   ROLE\
+cluster-example-1   1/1     Running   0          63s   primary\
+cluster-example-2   1/1     Running   0          41s   replica\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs48 \cf4 5. Check CNPG Image Version
+\fs40 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 kubectl get pods cluster-example-1 -o yaml | grep 'image: ghcr.io/cloudnative-pg/cloudnative-pg:'\cf0 \
+
+\f0\b\fs40 \
+
+\f1\b0\fs38 image: ghcr.io/cloudnative-pg/cloudnative-pg:1.24.0\
+image: ghcr.io/cloudnative-pg/cloudnative-pg:1.24.0\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs48 \cf4 6. Upgrade CNPG Operator\cf0 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\fs40 \cf0 Apply New Operator Version:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 kubectl apply --server-side -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.24/releases/cnpg-1.24.2.yaml\cf0 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs40 \cf0 \
+Monitor Pod Rollout in Another Terminal:\
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 kubectl get pods -L role -w\cf0 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs40 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf0 NAME                READY   STATUS    RESTARTS   AGE   ROLE\
+cluster-example-1   1/1     Running   0          11m   primary\
+cluster-example-2   1/1     Running   0          11m   replica\
+cluster-example-2   1/1     Terminating   0          11m   replica\
+cluster-example-2   0/1     Completed     0          11m   replica\
+cluster-example-2   0/1     Completed     0          11m   replica\
+cluster-example-2   0/1     Completed     0          11m   replica\
+cluster-example-2   0/1     Pending       0          0s    \
+cluster-example-2   0/1     Pending       0          0s    \
+cluster-example-2   0/1     Init:0/1      0          0s    \
+cluster-example-2   0/1     PodInitializing   0          2s    \
+cluster-example-2   0/1     Running           0          3s    \
+cluster-example-2   0/1     Running           0          4s    replica\
+cluster-example-2   0/1     Running           0          11s   replica\
+cluster-example-2   1/1     Running           0          11s   replica\
+cluster-example-1   1/1     Terminating       0          11m   primary\
+cluster-example-1   0/1     Completed         0          11m   primary\
+cluster-example-1   0/1     Completed         0          11m   primary\
+cluster-example-1   0/1     Completed         0          11m   primary\
+cluster-example-1   0/1     Pending           0          0s    \
+cluster-example-1   0/1     Pending           0          0s    \
+cluster-example-1   0/1     Init:0/1          0          0s    \
+cluster-example-1   0/1     PodInitializing   0          2s    \
+cluster-example-1   0/1     Running           0          3s    \
+cluster-example-1   0/1     Running           0          3s    primary\
+cluster-example-1   0/1     Running           0          11s   primary\
+cluster-example-1   1/1     Running           0          11s   primary\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs48 \cf4 7. Verify Cluster Status
+\fs40 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 kubectl cnpg status cluster-example\cf0 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs40 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf0 Cluster Summary\
+Name                 default/cluster-example\
+System ID:           7467160226110828572\
+PostgreSQL Image:    ghcr.io/cloudnative-pg/postgresql:16.4\
+Primary instance:    cluster-example-1\
+Primary start time:  2025-02-03 11:55:27 +0000 UTC (uptime 11m55s)\
+
+\f3\b Status: 
+\f1\b0              
+\f3\b Primary instance is being restarted without a switchover original and target PodSpec differ in containers: container postgres differs in environment
+\f1\b0 \
+Instances:           2\
+Ready instances:     1\
+Size:                142M\
+Current Write LSN:   0/7008000 (Timeline: 1 - WAL File: 000000010000000000000007)\
+\
+Continuous Backup status\
+Not configured\
+\
+Streaming Replication status\
+Not available yet\
+\
+Instances status\
+Name               Current LSN  Replication role      Status  QoS         Manager Version  Node\
+----               -----------  ----------------      ------  ---         ---------------  ----\
+cluster-example-1  0/7008000    Primary               OK      BestEffort  
+\f3\b 1.24.2 
+\f1\b0           cnpg-1.24.1-worker2\
+cluster-example-2  0/70000A0    Standby (file based)  OK      BestEffort  1.24.2           cnpg-1.24.1-worker\
+\
+swapnilsuryawanshi@LAPTOP385PNIN runbook-cnp % \cf5 kubectl cnpg status cluster-example\cf0 \
+Cluster Summary\
+Name                 default/cluster-example\
+System ID:           7467160226110828572\
+PostgreSQL Image:    ghcr.io/cloudnative-pg/postgresql:16.4\
+Primary instance:    cluster-example-1\
+Primary start time:  2025-02-03 11:55:27 +0000 UTC (uptime 12m30s)\
+
+\f3\b Status:              Cluster in healthy state 
+\f1\b0 \
+Instances:           2\
+Ready instances:     2\
+Size:                142M\
+Current Write LSN:   0/7008970 (Timeline: 1 - WAL File: 000000010000000000000007)\
+\
+Continuous Backup status\
+Not configured\
+\
+Streaming Replication status\
+Not available yet\
+\
+Instances status\
+Name               Current LSN  Replication role      Status  QoS         Manager Version  Node\
+----               -----------  ----------------      ------  ---         ---------------  ----\
+cluster-example-1  0/7008970    Primary               OK      BestEffort  1.24.2           cnpg-1.24.1-worker2\
+cluster-example-2  0/70000A0    Standby (file based)  OK      BestEffort  1.24.2           cnpg-1.24.1-worker\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs48 \cf4 8. Verify Upgraded Image Version\cf0 \
+
+\fs40 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf5 kubectl get pods cluster-example-1 -o yaml | grep 'image: ghcr.io/cloudnative-pg/cloudnative-pg:'\cf0 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs40 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\b0\fs38 \cf0 image: ghcr.io/cloudnative-pg/cloudnative-pg:1.24.2\
+image: ghcr.io/cloudnative-pg/cloudnative-pg:1.24.2\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs48 \cf2 Summary:\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\b0\fs36 \cf0 This runbook details a rolling upgrade of the CloudNativePG (CNPG) operator from version 
+\f1\fs38 1.24.0
+\f2\fs36  to 
+\f1\fs38 1.24.2
+\f2\fs36 . The steps include:\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls1\ilvl0\cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	1	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Creating a Kubernetes cluster using Kind.\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	2	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Deploying the CNPG operator.\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	3	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Installing the CNPG plugin.\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	4	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Deploying a PostgreSQL cluster.\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	5	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Checking the existing CNPG image version.\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	6	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Upgrading the CNPG operator.\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	7	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Monitoring pod updates and cluster status.\
+\ls1\ilvl0\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	8	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 Verifying the new CNPG image version after the upgrade.\
+}

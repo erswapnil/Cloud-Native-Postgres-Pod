@@ -1,0 +1,217 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Bold;\f1\froman\fcharset0 Times-Roman;\f2\fnil\fcharset0 HelveticaNeue-Bold;
+\f3\fnil\fcharset0 HelveticaNeue;\f4\fmodern\fcharset0 Courier;\f5\fmodern\fcharset0 Courier-Bold;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red38\green38\blue38;\red255\green255\blue255;
+\red240\green241\blue241;\red109\green109\blue109;\red85\green142\blue40;\red253\green128\blue8;\red164\green8\blue3;
+\red133\green0\blue175;\red174\green0\blue240;\red133\green0\blue175;\red174\green0\blue240;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c20000\c20000\c20000;\cssrgb\c100000\c100000\c100000;
+\cssrgb\c95294\c95686\c95686;\cssrgb\c50196\c50196\c50196;\cssrgb\c39975\c61335\c20601;\cssrgb\c100000\c57637\c0;\cssrgb\c71055\c10387\c0;
+\cssrgb\c59982\c16236\c74118;\cssrgb\c74609\c21796\c95404;\cssrgb\c59982\c16236\c74118;\cssrgb\c74609\c21796\c95404;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww35640\viewh22400\viewkind0
+\deftab720
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs42 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Runbook: Test Case for Configuring and Verifying Synchronous Streaming Replication in PostgreSQL (CNPG)\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs38 \cf0 This runbook provides step-by-step instructions for configuring and verifying synchronous streaming replication in a CNPG PostgreSQL cluster, including commands and their outputs.\
+\
+- 
+\f0\b Method
+\f2\fs32 \cf3 \cb4 \outl0\strokewidth0 :
+\f3\b0  either 
+\f2\b\fs28\fsmilli14400 \cb5 any
+\f3\b0\fs32 \cb4  (quorum) or 
+\f2\b\fs28\fsmilli14400 \cb5 first
+\f3\b0\fs32 \cb4  (priority)\cb1 \
+- 
+\f2\b Number\cb4 :
+\f3\b0  the number of synchronous standby servers that transactions must wait for responses from\cb1 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs38 \cf6 \outl0\strokewidth0 \strokec6 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 \strokec2 Step 1: Create a YAML for the CNPG cluster with synchronous replication\cf0 \
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 D
+\f1\b0 efine a 3-instance PostgreSQL cluster with synchronous replication enabled. The 
+\f4\fs40 synchronous.method
+\f1\fs38  is set to 
+\f4\fs40 any
+\f1\fs38  and the 
+\f4\fs40 number
+\f1\fs38  is set to 
+\f4\fs40 1
+\f1\fs38 .
+\f4\fs40 \
+\pard\pardeftab720\partightenfactor0
+\cf8 cat <<EOF | sudo tee cluster-example-SYNC.yaml\cf0 \
+apiVersion: postgresql.k8s.enterprisedb.io/v1\
+kind: Cluster\
+metadata:\
+  name: cluster-example\
+spec:\
+  instances: 3\
+\
+  storage:\
+    size: 1G\
+\
+  postgresql:\
+    synchronous:\
+      method: any\
+      number: 1\
+EOF\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs38 \cf6 \strokec6 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 \strokec2 Step 2: Apply the cluster manifest\cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f4\b0\fs40 \cf0 \
+\cf8 kubectl apply -f cluster-example-SYNC.yaml\cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs38 \cf6 \strokec6 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 \strokec2 Step 3: Check the status of the pods
+\f4\b0\fs40 \cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl get pods -L role\cf0 \
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b\fs38 \cf0 Result:
+\f1\b0 \
+\pard\pardeftab720\partightenfactor0
+
+\f4\fs40 \cf0 \
+NAME                READY   STATUS    RESTARTS   AGE    ROLE\
+cluster-example-1   1/1     Running   0          153m   primary\
+cluster-example-2   1/1     Running   0          153m   replica\
+cluster-example-3   1/1     Running   0          152m   replica\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs38 \cf6 \strokec6 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 \strokec2 Step 4: Check the cluster status
+\f4\b0\fs40 \cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl cnp status cluster-example\cf0 \
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b\fs38 \cf0 Result:
+\f4\b0\fs40 \
+\pard\pardeftab720\partightenfactor0
+\cf0 Cluster Summary\
+Name                 default/cluster-example\
+System ID:           7452311956268736536\
+PostgreSQL Image:    quay.io/enterprisedb/postgresql:17.0\
+Primary instance:    cluster-example-1\
+Primary start time:  2024-12-25 11:36:35 +0000 UTC (uptime 2h33m52s)\
+Status:              Cluster in healthy state\
+Instances:           3\
+Ready instances:     3\
+Size:                142M\
+Current Write LSN:   0/7000060 (Timeline: 1 - WAL File: 000000010000000000000007)\
+\
+Streaming Replication status\
+Replication Slots Enabled\
+Name               Sent LSN   Write LSN  Flush LSN  Replay LSN  Write Lag  Flush Lag  Replay Lag  State      Sync State  Sync Priority  Replication Slot\
+----               --------   ---------  ---------  ----------  ---------  ---------  ----------  -----      ----------  -------------  ----------------\
+cluster-example-2  0/7000060  0/7000060  0/7000060  0/7000060   00:00:00   00:00:00   00:00:00    streaming  quorum      1              active\
+cluster-example-3  0/7000060  0/7000060  0/7000060  0/7000060   00:00:00   00:00:00   00:00:00    streaming  quorum      1              active\
+\
+Instances status\
+Name               Current LSN  Replication role  Status  QoS         Manager Version  Node\
+----               -----------  ----------------  ------  ---         ---------------  ----\
+cluster-example-1  0/7000060    Primary           OK      BestEffort  1.24.1           cnp-1.24.1-control-plane\
+cluster-example-2  0/7000060    
+\f5\b Standby (sync)
+\f4\b0     OK      BestEffort  1.24.1           cnp-1.24.1-control-plane\
+cluster-example-3  0/7000060    
+\f5\b Standby (sync) 
+\f4\b0    OK      BestEffort  1.24.1           cnp-1.24.1-control-plane\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs38 \cf6 \strokec6 \
+\pard\pardeftab720\sa319\partightenfactor0
+
+\f0\b \cf7 \strokec2 Step 5: Log in to the database and check 
+\f5\fs40 synchronous_standby_names
+\f4\b0 \cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf8 kubectl cnp psql cluster-example\cf0 \
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b\fs38 \cf0 Inside the 
+\f5\fs40 psql
+\f0\fs38  prompt:
+\f4\b0\fs40 \
+\pard\pardeftab720\partightenfactor0
+\cf8 SHOW synchronous_standby_names;\cf0 \
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\b\fs38 \cf0 Result:
+\f4\b0\fs40 \
+\pard\pardeftab720\partightenfactor0
+\cf0                       synchronous_standby_names                      \
+---------------------------------------------------------------------\
+ ANY 1 ("cluster-example-2","cluster-example-3","cluster-example-1")\
+(1 row)\
+\
+\
+
+\f0\b\fs72 \cf9 Task To Complete:\
+===============\
+\
+
+\f1\b0\fs52 \cf2 1. Create the cluster with 
+\f0\b name
+\f1\b0  \'91\cf10 cluster-sync-first\cf2 \'92 with  
+\f0\b instance
+\f1\b0  \'91\cf11 3\cf2 \'92 with 
+\f0\b Method
+\f1\b0  \'91\cf11 first\cf2 \'92 with 
+\f0\b Number
+\f1\b0  \'91\cf11 1\cf2 \'92\
+\
+- Delete the POD \cf2 \outl0\strokewidth0 \'91\cf12 cluster-sync-first-1\cf2 \'92 and check the result of  \cf11 \'91
+\f4\fs40 SHOW synchronous_standby_names;\'92
+\f1\fs52 \cf2 \outl0\strokewidth0 \strokec2 \
+\
+2. \cf2 \outl0\strokewidth0 Create the cluster with 
+\f0\b name
+\f1\b0  \'91\cf12 cluster-sync-any\cf2 \'92 with  
+\f0\b instance
+\f1\b0  \'91\cf13 3\cf2 \'92 with 
+\f0\b Method
+\f1\b0  \'91\cf13 any\cf2 \'92 with 
+\f0\b Number
+\f1\b0  \'91\cf13 2\cf2 \'92 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 - Delete the POD \'91\cf12 cluster-sync-any-1, \cf12 cluster-sync-any-2\cf2 \'92 and check the result of  \cf13 \'91
+\f4\fs40 SHOW synchronous_standby_names;\'92\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs52 \cf2 - check the Pod logs of \cf12 cluster-sync-any-3 \cf2 and capture the error or any meanigfull info.\
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+
+\f4\fs40 \cf0 \outl0\strokewidth0 \strokec2 \
+\
+}
