@@ -1,304 +1,249 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2761
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Bold;\f1\froman\fcharset0 Times-Roman;\f2\fmodern\fcharset0 Courier;
-\f3\fnil\fcharset0 Menlo-Regular;\f4\fswiss\fcharset0 Arial-BoldMT;\f5\fswiss\fcharset0 ArialMT;
-\f6\fnil\fcharset0 HelveticaNeue;}
-{\colortbl;\red255\green255\blue255;\red164\green8\blue3;\red0\green0\blue0;\red109\green109\blue109;
-\red0\green0\blue233;\red85\green142\blue40;\red253\green128\blue8;\red0\green0\blue0;\red253\green128\blue8;
-\red168\green24\blue75;\red46\green111\blue253;\red38\green38\blue38;\red255\green255\blue255;}
-{\*\expandedcolortbl;;\cssrgb\c71055\c10387\c0;\cssrgb\c0\c0\c0;\cssrgb\c50196\c50196\c50196;
-\cssrgb\c0\c0\c93333;\cssrgb\c39975\c61335\c20601;\cssrgb\c100000\c57637\c0;\csgray\c0;\cssrgb\c100000\c57637\c0;
-\cssrgb\c72439\c17643\c36556;\cssrgb\c22750\c53231\c99501;\cssrgb\c20000\c20000\c20000;\cssrgb\c100000\c100000\c100000;}
-{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid1\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
-{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid101\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}
-{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid201\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}
-{\list\listtemplateid4\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid301\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid4}
-{\list\listtemplateid5\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid401\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid5}}
-{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}{\listoverride\listid5\listoverridecount0\ls5}}
-\paperw11900\paperh16840\margl1440\margr1440\vieww35640\viewh21840\viewkind0
-\deftab720
-\pard\pardeftab720\sa280\partightenfactor0
+# CloudNativePG Cluster Management Runbook
 
-\f0\b\fs44 \cf2 \expnd0\expndtw0\kerning0
-\
-Prerequisites:\
-==========\cf0 \
-\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls1\ilvl0
-\fs40 \cf0 \kerning1\expnd0\expndtw0 {\listtext	1	}\expnd0\expndtw0\kerning0
-Kubectl
-\f1\b0 : Ensure kubectl (v1.30 or later) is installed and running on the server.\
-\ls1\ilvl0
-\f0\b \kerning1\expnd0\expndtw0 {\listtext	2	}\expnd0\expndtw0\kerning0
-Docker
-\f1\b0 : Verify Docker is installed and operational on the server.\
-\ls1\ilvl0
-\f0\b \kerning1\expnd0\expndtw0 {\listtext	3	}\expnd0\expndtw0\kerning0
-Kind
-\f1\b0 : Confirm Kind is installed on the server.\
-\pard\pardeftab720\partightenfactor0
-\cf4 \
-\pard\pardeftab720\sa280\partightenfactor0
+This runbook outlines the steps to create, manage, and scale a PostgreSQL cluster using the **CloudNativePG Operator**.
 
-\f0\b\fs44 \cf2 Steps to Install the Cloud-Native-Postgres (CNP) Operator:\
-=============================================\
-\cf0 \
-\pard\pardeftab720\sa319\partightenfactor0
+---
 
-\fs40 \cf0 Official Documentation: {\field{\*\fldinst{HYPERLINK "https://cloudnative-pg.io/documentation/1.25/quickstart/"}}{\fldrslt 
-\f1\b0 \cf5 \ul \ulc5 Quickstart Guide for CNP Operator}}
-\f1\b0 \
-\pard\pardeftab720\partightenfactor0
-\cf4 \
-\pard\pardeftab720\sa319\partightenfactor0
+## Prerequisites
 
-\f0\b \cf6 Step 1: Create a Kind Cluster\cf0 \
-\pard\pardeftab720\sa240\partightenfactor0
+Ensure the following are in place:
 
-\f1\b0 \cf0 Use the following syntax to create a cluster with a specific name:\
+1. **Kubernetes cluster** with `kubectl` configured.
+2. **CloudNativePG Operator** installed ([CloudNativePG Documentation](https://cloudnative-pg.io/documentation/current/)).
 
-\f0\b Command Syntax
-\f1\b0 :
-\f2\fs42 \
-\pard\pardeftab720\partightenfactor0
-\cf0 kind create cluster --name <cluster_name>\
-\
-\pard\pardeftab720\sa240\partightenfactor0
+---
 
-\f0\b\fs40 \cf0 Example Execution
-\f1\b0 :
-\f2\fs42 \
-\pard\pardeftab720\partightenfactor0
-\cf0 % \cf7 kind create cluster --name cnpg-1.25.0\cf0 \
-\
-\pard\pardeftab720\sa240\partightenfactor0
+## Step 1: Create a Cluster Configuration File
 
-\f0\b\fs40 \cf0 Result
-\f1\b0 :
-\f2\fs42 \
-using docker due to KIND_EXPERIMENTAL_PROVIDER\
-\pard\pardeftab720\partightenfactor0
-\cf0 Creating cluster "cnpg-1.25.0" ...\
- \uc0\u10003  Ensuring node image (kindest/node:v1.32.0) \u55357 \u56764 \
- \uc0\u10003  Preparing nodes \u55357 \u56550   \
- \uc0\u10003  Writing configuration \u55357 \u56540  \
- \uc0\u10003  Starting control-plane \u55357 \u56697 \u65039  \
- \uc0\u10003  Installing CNI \u55357 \u56588  \
- \uc0\u10003  Installing StorageClass \u55357 \u56510  \
-Set kubectl context to "kind-cnpg-1.25.0"\
-\
-You can now use your cluster with:\
-kubectl cluster-info --context kind-cnpg-1.25.0\
-\pard\pardeftab720\partightenfactor0
+Save the following configuration to a file:
 
-\f1\fs40 \cf4 \
-\pard\pardeftab720\sa319\partightenfactor0
+```
+cat <<EOF | sudo tee /Users/swapnilsuryawanshi/Desktop/cnp-yaml/runbook-cnp/cluster-example.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cluster-example
+spec:
+  instances: 3
+  storage:
+    size: 1Gi
+EOF
+```
 
-\f0\b \cf6 Step 2: Check the Cluster Details\cf0 \
-\pard\pardeftab720\sa240\partightenfactor0
+---
 
-\f1\b0 \cf0 Run the following command to verify the cluster information:\
+## Step 2: Deploy the Cluster
 
-\f0\b Command
-\f1\b0 :
-\f2\fs42 \
-\pard\pardeftab720\partightenfactor0
-\cf7 kubectl cluster-info --context kind-cnpg-1.25.0\cf0 \
-\
-\pard\pardeftab720\sa240\partightenfactor0
+```
+kubectl apply -f cluster-example.yaml
+```
 
-\f0\b\fs40 \cf0 Example Output
-\f1\b0 :
-\f2\fs42 \
-\pard\pardeftab720\partightenfactor0
-\cf0 Kubernetes control plane is running at https://127.0.0.1:50807\
-CoreDNS is running at https://127.0.0.1:50807/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy\
-\pard\pardeftab720\partightenfactor0
+---
 
-\f1\fs40 \cf4 \
-\pard\pardeftab720\sa319\partightenfactor0
+## Step 3: Verify Pods
 
-\f0\b \cf6 Step 3: Deploy the CNPG Operator\cf0 \
-\pard\pardeftab720\sa240\partightenfactor0
+```
+kubectl get pods -L role
 
-\f1\b0 \cf0 Refer to the {\field{\*\fldinst{HYPERLINK "https://cloudnative-pg.io/documentation/1.25/installation_upgrade/"}}{\fldrslt \cf5 \ul \ulc5 installation guide}} for deploying the operator.\
+# Expected output
+NAME               READY   STATUS    RESTARTS   AGE   ROLE
+cluster-example-1  1/1     Running   0          50s   primary
+cluster-example-2  1/1     Running   0          30s   replica
+cluster-example-3  1/1     Running   0          12s   replica
+```
 
-\f0\b Command Syntax
-\f1\b0 :
-\f2\fs42 \
-\pard\pardeftab720\partightenfactor0
-\cf3 kubectl apply --server-side -f /path_to_operator_yaml/\cf0 \
-\
-\pard\pardeftab720\sa240\partightenfactor0
+---
 
-\f0\b\fs40 \cf0 Example Execution
-\f1\b0 :
-\f2\fs42 \
-\pard\pardeftab720\partightenfactor0
-\cf7 kubectl apply --server-side -f \\\
-https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.25/releases/cnpg-1.25.0.yaml\cf0 \
-\
-\pard\pardeftab720\sa240\partightenfactor0
+## Step 4: Install the CloudNativePG Plugin
 
-\f0\b\fs40 \cf0 Result
-\f1\b0 :
-\f2\fs42 \
-\pard\pardeftab720\partightenfactor0
-\cf0 namespace/cnpg-system serverside-applied\
-customresourcedefinition.apiextensions.k8s.io/backups.postgresql.cnpg.io serverside-applied\
-...\
-deployment.apps/cnpg-controller-manager serverside-applied\
-mutatingwebhookconfiguration.admissionregistration.k8s.io/cnpg-mutating-webhook-configuration serverside-applied\
-validatingwebhookconfiguration.admissionregistration.k8s.io/cnpg-validating-webhook-configuration serverside-applied\
-\pard\pardeftab720\partightenfactor0
+```
+curl -sSfL https://github.com/cloudnative-pg/cloudnative-pg/raw/main/hack/install-cnpg-plugin.sh | sudo sh -s -- -b /usr/local/bin
 
-\f1\fs40 \cf4 \
-\pard\pardeftab720\sa319\partightenfactor0
+# Verify installation
+kubectl cnpg version
+```
 
-\f0\b \cf6 Step 4: Verify Deployment Status\cf0 \
-\pard\pardeftab720\sa240\partightenfactor0
+---
 
-\f1\b0 \cf0 Check if the deployment is ready:\
+## Step 5: Check Cluster Status
 
-\f0\b Command
-\f1\b0 :
-\f2\fs42 \
-\pard\pardeftab720\partightenfactor0
-\cf7 kubectl get deployment -n cnpg-system cnpg-controller-manager\cf0 \
-\
-\pard\pardeftab720\sa240\partightenfactor0
+```
+kubectl cnpg status cluster-example
 
-\f0\b\fs40 \cf0 Example Output
-\f1\b0 :
-\f2\fs42 \
-\pard\pardeftab720\partightenfactor0
-\cf0 NAME                      READY   UP-TO-DATE   AVAILABLE   AGE\
-cnpg-controller-manager   1/1     1            1           47s\
-\pard\pardeftab720\partightenfactor0
+# Expected output (summary)
+Cluster Summary
+Name: default/cluster-example
+Status: Cluster in healthy state
+Instances: 3
+Ready instances: 3
+Primary instance: cluster-example-1
+Streaming Replication: Enabled
+```
 
-\f1\fs40 \cf4 \
-\pard\pardeftab720\sa319\partightenfactor0
+---
 
-\f0\b \cf6 Step 5: Verify Additional Details\cf0 \
-\pard\pardeftab720\sa240\partightenfactor0
+## Step 6: Connect to the Primary Instance
 
-\f1\b0 \cf0 Use the following commands to confirm the cluster setup:\
-\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
-\ls2\ilvl0
-\f0\b \cf0 1. Check Pods
-\f2\b0\fs42 : \cf7 kubectl get pod -n cnpg-system\cf0 \
-\ls2\ilvl0
-\f0\b\fs40 Output
-\f1\b0 :\uc0\u8232 
-\f2\fs42 \
-NAME                                       READY   STATUS    RESTARTS   AGE\
-cnpg-controller-manager-7db9c889df-95km2   1/1     Running   0          41s\
-\pard\tx720\pardeftab720\partightenfactor0
+```
+kubectl cnpg psql cluster-example
+```
 
-\f1\fs40 \cf0 \
-\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
-\ls3\ilvl0
-\f0\b \cf0 Check Nodes
-\f1\b0 : 
-\f2\fs42 \cf7 kubectl get node -n cnpg-system\cf0 \
-\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls3\ilvl0
-\f0\b\fs40 \cf0 Output
-\f1\b0 :\
-\
-\ls3\ilvl0
-\f2\fs42 NAME                        STATUS   ROLES           AGE   VERSION\
-cnpg-1.25.0-control-plane   Ready    control-plane   18m   v1.32.0\
-\
-\ls3\ilvl0
-\f0\b\fs40 Check Services
-\f1\b0 : 
-\f2\fs42 \cf7 kubectl get svc -n cnpg-system\cf0 \
-\ls3\ilvl0\kerning1\expnd0\expndtw0 \
-\ls3\ilvl0
-\f0\b\fs40 \expnd0\expndtw0\kerning0
-Output
-\f1\b0 :\
-\pard\tx720\pardeftab720\partightenfactor0
+---
 
-\f2\fs42 \cf0 \kerning1\expnd0\expndtw0 \
-\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls4\ilvl0\cf0 \expnd0\expndtw0\kerning0
-NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE\
-cnpg-webhook-service   ClusterIP   10.96.96.197   <none>        443/TCP   114\
-\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\cf0 \
-\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
-\ls5\ilvl0
-\f3\fs22 \cf8 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
-\pard\pardeftab720\sa319\partightenfactor0
+## Step 7: Verify Replication Status
 
-\f0\b\fs40 \cf6 \expnd0\expndtw0\kerning0
-\CocoaLigature1 Step 5: Verify All available created clusters with kind
-\f2\b0\fs42 \cf3 \
-\pard\pardeftab720\partightenfactor0
+```
+SELECT * FROM pg_stat_replication;
 
-\f3\fs22 \cf8 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+# Expected output
+application_name | state      | sync_state
+-----------------+------------+-----------
+cluster-example-2| streaming  | async
+cluster-example-3| streaming  | async
+```
 
-\f2\fs42 % \cf9 kubectl config get-contexts\cf8 \
-\
-CURRENT   NAME                     CLUSTER                  AUTHINFO                 NAMESPACE\
-*         kind-cnp-1.24.0          kind-cnp-1.24.0          kind-cnp-1.24.0          \
-          kind-cnp-1.24.0-backup   kind-cnp-1.24.0-backup   kind-cnp-1.24.0-backup   \
-          kind-cnpg-1.25.0         kind-cnpg-1.25.0         kind-cnpg-1.25.0         \
-\
-% \cf9 kubectl config --help\cf8         \
-\
-Available Commands:\
-\
-  current-context   Display the current-context\
-  delete-cluster    Delete the specified cluster from the kubeconfig\
-  delete-context    Delete the specified context from the kubeconfig\
-  delete-user       Delete the specified user from the kubeconfig\
-  get-clusters      Display clusters defined in the kubeconfig\
-  get-contexts      Describe one or many contexts\
-  get-users         Display users defined in the kubeconfig\
-  rename-context    Rename a context from the kubeconfig file\
-  set               Set an individual value in a kubeconfig file\
-  set-cluster       Set a cluster entry in kubeconfig\
-  set-context       Set a context entry in kubeconfig\
-  set-credentials   Set a user entry in kubeconfig\
-  unset             Unset an individual value in a kubeconfig file\
-  use-context       Set the current-context in a kubeconfig file\
-  view              Display merged kubeconfig settings or a specified kubeconfig file\cf0 \expnd0\expndtw0\kerning0
-\CocoaLigature1 \
-\pard\pardeftab720\partightenfactor0
-\cf8 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
-\
+---
 
-\f4\b\fs66 \cf10 The task to complete:\
-==================
-\f5\b0\fs42 \cf8 \
-\
-1. Create the kind cluster with the name  
-\f2 \cf7 \expnd0\expndtw0\kerning0
-\CocoaLigature1 cnpg-1.24.0 \
+## Step 8: Connect to a Replica Instance
 
-\f5 \cf8 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
-2. Deploy the v 1.24.0 CNPG operator \cf11 https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.24/releases/cnpg-1.24.0.yaml\
-\
-\cf8 3. Get the node status it should show 
-\f2 \cf0 \expnd0\expndtw0\kerning0
-\CocoaLigature1 cnpg-1.24.0-control-plane Ready\
-\
+```
+kubectl cnpg psql cluster-example --replica
 
-\f5 \cf8 \kerning1\expnd0\expndtw0 \CocoaLigature0 4. set the context to  
-\f2 \cf7 \expnd0\expndtw0\kerning0
-\CocoaLigature1 cnpg-1.25.0\
-\
+SELECT pg_is_in_recovery();
 
-\f5 \cf8 \kerning1\expnd0\expndtw0 \CocoaLigature0 5. Get the node status it should show 
-\f2 \cf0 \expnd0\expndtw0\kerning0
-\CocoaLigature1 cnpg-1.25.0-control-plane Ready\
-\
+# Expected output
+t
+```
 
-\f5 \cf8 \kerning1\expnd0\expndtw0 \CocoaLigature0 6. 
-\f6\fs44 \cf12 \cb13 \expnd0\expndtw0\kerning0
-\CocoaLigature1 Document all results in a text file for verification in the next session.
-\f2\fs42 \cf8 \cb1 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
-}
+---
+
+## Additional Commands
+
+```
+# Restart Cluster
+kubectl cnpg restart cluster-example
+
+# Reload Cluster Configuration
+kubectl cnpg reload cluster-example
+
+# Promote Replica to Primary
+kubectl cnpg promote cluster-example-<replica-name>
+
+# Destroy Cluster
+kubectl cnpg destroy cluster-example
+```
+
+---
+
+## Creating a Cluster in a Specific Namespace
+
+```
+kubectl creat namespace test
+namespace/test created
+```
+```
+kubectl get namespace
+NAME                   STATUS   AGE
+cnpg-system            Active   8d
+default                Active   8d
+kube-node-lease        Active   8d
+kube-public            Active   8d
+kube-system            Active   8d
+local-path-storage     Active   8d
+test                   Active   34s
+```
+
+```
+cat <<EOF | sudo tee /Users/swapnilsuryawanshi/Desktop/cnp-yaml/runbook-cnp/cluster-example1.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cluster-example
+  namespace: test
+spec:
+  instances: 2
+  storage:
+    size: 1Gi
+EOF
+```
+
+```
+kubectl get pods -L role -n test
+NAME                READY STATUS   RESTARTS AGE ROLE
+cluster-example-1   1/1   Running  0        51s primary
+cluster-example-2   1/1   Running  0        28s replica
+```
+
+```
+kubectl cnpg status cluster-example -n test
+Cluster Summary
+Name test/cluster-example
+System ID: 7462369303492276252
+PostgreSQL Image: ghcr.io/cloudnative-pg/postgresql:17.2
+Primary instance: cluster-example-1
+Primary start time: 2025-01-21 14:04:15 +0000 UTC (uptime 2m10s)
+Status: Cluster in healthy state
+Instances: 2
+Ready instances: 2
+Size: 94M
+Current Write LSN: 0/4050170 (Timeline: 1 - WAL File: 000000010000000000000004)
+
+Continuous Backup status
+Not configured
+
+Streaming Replication status
+Replication Slots Enabled
+Name               Sent LSN  Write LSN Flush LSN Replay LSN Write Lag Flush Lag Replay Lag State     Sync State Sync Priority Replication Slot
+cluster-example-2  0/4050170 0/4050170 0/4050170 0/4050170 00:00:00 00:00:00 00:00:00 streaming async 0           active
+
+Instances status
+Name               Current LSN Replication role Status QoS Manager Version Node
+cluster-example-1  0/4050170  Primary          OK     BestEffort 1.25.0    cnpg-1.25.0-control-plane
+cluster-example-2  0/4050170  Standby (async)  OK     BestEffort 1.25.0    cnpg-1.25.0-control-plane
+
+```
+
+---
+
+## Scaling the Cluster
+
+### Scale Down
+
+```
+kubectl get pods -L role
+NAME                READY STATUS   RESTARTS           AGE ROLE
+cluster-example-1   1/1   Running  1 (5d1h ago)       8d  primary
+cluster-example-2   1/1   Running  1 (5d1h ago)       8d  replica
+cluster-example-3   1/1   Running  1 (5d1h ago)       8d  replica
+
+kubectl scale --replicas=1 cluster/cluster-example
+cluster.postgresql.cnpg.io/cluster-example scaled
+
+kubectl get pods -L role
+NAME                READY STATUS   RESTARTS           AGE ROLE
+cluster-example-1   1/1   Running  1 (5d1h ago)       8d  primary
+```
+
+### Scale Up
+
+```
+kubectl get pods -L role
+NAME                READY STATUS   RESTARTS           AGE ROLE
+cluster-example-1   1/1   Running  1 (5d1h ago)       8d  primary
+
+kubectl scale --replicas=4 cluster/cluster-example
+cluster.postgresql.cnpg.io/cluster-example scaled
+
+kubectl get pods -L role
+NAME                READY STATUS   RESTARTS AGE ROLE
+cluster-example-1   1/1   Running  1        8d  primary
+cluster-example-4   1/1   Running  0        5m8s replica
+cluster-example-5   1/1   Running  0        4m47s replica
+cluster-example-6   1/1   Running  0        4m25s replica
+```
+
+---
+
+## Reference
+
+- [Deploy a PostgreSQL cluster](https://cloudnative-pg.io/documentation/current/quickstart/#part-3-deploy-a-postgresql-cluster)
