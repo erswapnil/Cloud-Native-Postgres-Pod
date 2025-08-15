@@ -1,0 +1,249 @@
+# CloudNativePG Postgres Cluster Management
+
+This runbook outlines the steps to create, manage, and scale a PostgreSQL cluster using the **CloudNativePG Operator**.
+
+---
+
+## Prerequisites
+
+Ensure the following are in place:
+
+1. **Kubernetes cluster** with `kubectl` configured.
+2. **CloudNativePG Operator** installed ([CloudNativePG Documentation](https://cloudnative-pg.io/documentation/current/)).
+
+---
+
+## Step 1: Create a Cluster Configuration File
+
+Save the following configuration to a file:
+
+```
+cat <<EOF | sudo tee /Users/swapnilsuryawanshi/Desktop/cnp-yaml/runbook-cnp/cluster-example.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cluster-example
+spec:
+  instances: 3
+  storage:
+    size: 1Gi
+EOF
+```
+
+---
+
+## Step 2: Deploy the Cluster
+
+```
+kubectl apply -f cluster-example.yaml
+```
+
+---
+
+## Step 3: Verify Pods
+
+```
+kubectl get pods -L role
+
+# Expected output
+NAME               READY   STATUS    RESTARTS   AGE   ROLE
+cluster-example-1  1/1     Running   0          50s   primary
+cluster-example-2  1/1     Running   0          30s   replica
+cluster-example-3  1/1     Running   0          12s   replica
+```
+
+---
+
+## Step 4: Install the CloudNativePG Plugin
+
+```
+curl -sSfL https://github.com/cloudnative-pg/cloudnative-pg/raw/main/hack/install-cnpg-plugin.sh | sudo sh -s -- -b /usr/local/bin
+
+# Verify installation
+kubectl cnpg version
+```
+
+---
+
+## Step 5: Check Cluster Status
+
+```
+kubectl cnpg status cluster-example
+
+# Expected output (summary)
+Cluster Summary
+Name: default/cluster-example
+Status: Cluster in healthy state
+Instances: 3
+Ready instances: 3
+Primary instance: cluster-example-1
+Streaming Replication: Enabled
+```
+
+---
+
+## Step 6: Connect to the Primary Instance
+
+```
+kubectl cnpg psql cluster-example
+```
+
+---
+
+## Step 7: Verify Replication Status
+
+```
+SELECT * FROM pg_stat_replication;
+
+# Expected output
+application_name | state      | sync_state
+-----------------+------------+-----------
+cluster-example-2| streaming  | async
+cluster-example-3| streaming  | async
+```
+
+---
+
+## Step 8: Connect to a Replica Instance
+
+```
+kubectl cnpg psql cluster-example --replica
+
+SELECT pg_is_in_recovery();
+
+# Expected output
+t
+```
+
+---
+
+## Additional Commands
+
+```
+# Restart Cluster
+kubectl cnpg restart cluster-example
+
+# Reload Cluster Configuration
+kubectl cnpg reload cluster-example
+
+# Promote Replica to Primary
+kubectl cnpg promote cluster-example-<replica-name>
+
+# Destroy Cluster
+kubectl cnpg destroy cluster-example
+```
+
+---
+
+## Creating a Cluster in a Specific Namespace
+
+```
+kubectl creat namespace test
+namespace/test created
+```
+```
+kubectl get namespace
+NAME                   STATUS   AGE
+cnpg-system            Active   8d
+default                Active   8d
+kube-node-lease        Active   8d
+kube-public            Active   8d
+kube-system            Active   8d
+local-path-storage     Active   8d
+test                   Active   34s
+```
+
+```
+cat <<EOF | sudo tee /Users/swapnilsuryawanshi/Desktop/cnp-yaml/runbook-cnp/cluster-example1.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cluster-example
+  namespace: test
+spec:
+  instances: 2
+  storage:
+    size: 1Gi
+EOF
+```
+
+```
+kubectl get pods -L role -n test
+NAME                READY STATUS   RESTARTS AGE ROLE
+cluster-example-1   1/1   Running  0        51s primary
+cluster-example-2   1/1   Running  0        28s replica
+```
+
+```
+kubectl cnpg status cluster-example -n test
+Cluster Summary
+Name test/cluster-example
+System ID: 7462369303492276252
+PostgreSQL Image: ghcr.io/cloudnative-pg/postgresql:17.2
+Primary instance: cluster-example-1
+Primary start time: 2025-01-21 14:04:15 +0000 UTC (uptime 2m10s)
+Status: Cluster in healthy state
+Instances: 2
+Ready instances: 2
+Size: 94M
+Current Write LSN: 0/4050170 (Timeline: 1 - WAL File: 000000010000000000000004)
+
+Continuous Backup status
+Not configured
+
+Streaming Replication status
+Replication Slots Enabled
+Name               Sent LSN  Write LSN Flush LSN Replay LSN Write Lag Flush Lag Replay Lag State     Sync State Sync Priority Replication Slot
+cluster-example-2  0/4050170 0/4050170 0/4050170 0/4050170 00:00:00 00:00:00 00:00:00 streaming async 0           active
+
+Instances status
+Name               Current LSN Replication role Status QoS Manager Version Node
+cluster-example-1  0/4050170  Primary          OK     BestEffort 1.25.0    cnpg-1.25.0-control-plane
+cluster-example-2  0/4050170  Standby (async)  OK     BestEffort 1.25.0    cnpg-1.25.0-control-plane
+
+```
+
+---
+
+## Scaling the Cluster
+
+### Scale Down
+
+```
+kubectl get pods -L role
+NAME                READY STATUS   RESTARTS           AGE ROLE
+cluster-example-1   1/1   Running  1 (5d1h ago)       8d  primary
+cluster-example-2   1/1   Running  1 (5d1h ago)       8d  replica
+cluster-example-3   1/1   Running  1 (5d1h ago)       8d  replica
+
+kubectl scale --replicas=1 cluster/cluster-example
+cluster.postgresql.cnpg.io/cluster-example scaled
+
+kubectl get pods -L role
+NAME                READY STATUS   RESTARTS           AGE ROLE
+cluster-example-1   1/1   Running  1 (5d1h ago)       8d  primary
+```
+
+### Scale Up
+
+```
+kubectl get pods -L role
+NAME                READY STATUS   RESTARTS           AGE ROLE
+cluster-example-1   1/1   Running  1 (5d1h ago)       8d  primary
+
+kubectl scale --replicas=4 cluster/cluster-example
+cluster.postgresql.cnpg.io/cluster-example scaled
+
+kubectl get pods -L role
+NAME                READY STATUS   RESTARTS AGE ROLE
+cluster-example-1   1/1   Running  1        8d  primary
+cluster-example-4   1/1   Running  0        5m8s replica
+cluster-example-5   1/1   Running  0        4m47s replica
+cluster-example-6   1/1   Running  0        4m25s replica
+```
+
+---
+
+## Reference
+
+- [Deploy a PostgreSQL cluster](https://cloudnative-pg.io/documentation/current/quickstart/#part-3-deploy-a-postgresql-cluster)
