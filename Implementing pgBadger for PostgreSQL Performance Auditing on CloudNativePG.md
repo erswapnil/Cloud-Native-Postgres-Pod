@@ -23,7 +23,7 @@ Modify the PostgreSQL Custom Resource (CR) to include the required logging param
 ```
 
 ```      
-swapnilsuryawanshi@MAC-CR9L20YFN6 plugin % kubectl edit cluster postgresql-advanced-cluster
+swapnilsuryawanshi% kubectl edit cluster postgresql-advanced-cluster
 cluster.postgresql.k8s.enterprisedb.io/postgresql-advanced-cluster edited
 ```
 
@@ -31,7 +31,7 @@ cluster.postgresql.k8s.enterprisedb.io/postgresql-advanced-cluster edited
 Connect to the database via the CloudNativePG (CNP) plugin to confirm that the changes have been applied to the runtime environment.
 
 ```
-swapnilsuryawanshi@MAC-CR9L20YFN6 plugin % kubectl cnp psql postgresql-advanced-cluster    
+swapnilsuryawanshi% kubectl cnp psql postgresql-advanced-cluster    
 psql (18.3.0)
 Type "help" for help.
 
@@ -103,18 +103,18 @@ Download and compile pgBadger on your local machine or an analysis server.
 
 ### Clone and Build
 ```
-swapnilsuryawanshi@MAC-CR9L20YFN6 59686-pgbadger % git clone https://github.com/darold/pgbadger.git
+swapnilsuryawanshi% git clone https://github.com/darold/pgbadger.git
 Cloning into 'pgbadger'...
 ...
 Resolving deltas: 100% (3257/3257), done.
 ```
 
 ```
-swapnilsuryawanshi@MAC-CR9L20YFN6 59686-pgbadger % cd pgbadger
+swapnilsuryawanshi% cd pgbadger
 ```
 
 ```
-swapnilsuryawanshi@MAC-CR9L20YFN6 pgbadger % perl Makefile.PL
+swapnilsuryawanshi% perl Makefile.PL
 Checking if your kit is complete...
 Looks good
 Generating a Unix-style Makefile
@@ -125,7 +125,7 @@ Writing Makefile for pgBadger
 Use `make install` to move the pgbadger binary to your local path.
 
 ```
-swapnilsuryawanshi@MAC-CR9L20YFN6 pgbadger % make && sudo make install
+swapnilsuryawanshi% make && sudo make install
 ...
 Installing /usr/local/bin/pgbadger
 Appending installation info to /Library/Perl/Updates/5.34.1/darwin-thread-multi-2level/perllocal.pod
@@ -137,7 +137,7 @@ Appending installation info to /Library/Perl/Updates/5.34.1/darwin-thread-multi-
 Identify the primary database pod and redirect the logs to a local file for analysis.
 
 ```
-swapnilsuryawanshi@MAC-CR9L20YFN6 pgbadger % kubectl get pods -L role
+swapnilsuryawanshi% kubectl get pods -L role
 NAME                            READY   STATUS    RESTARTS   AGE   ROLE
 postgresql-advanced-cluster-1   2/2     Running   0          26h   primary
 postgresql-advanced-cluster-2   2/2     Running   0          26h   replica
@@ -145,12 +145,12 @@ postgresql-advanced-cluster-3   2/2     Running   0          26h   replica
 ```
 
 ```
-swapnilsuryawanshi@MAC-CR9L20YFN6 pgbadger % kubectl logs postgresql-advanced-cluster-1 > postgresql.log
+swapnilsuryawanshi% kubectl logs postgresql-advanced-cluster-1 > postgresql.log
 Defaulted container "postgres" out of: postgres, bootstrap-controller (init), plugin-barman-cloud (init)
 ```
 
 ```
-swapnilsuryawanshi@MAC-CR9L20YFN6 pgbadger % ls -l postgresql.log
+swapnilsuryawanshi% ls -l postgresql.log
 -rw-r--r--  1 swapnilsuryawanshi  staff  1158967 31 Mar 19:17 postgresql.log
 ```
 
@@ -162,7 +162,7 @@ Analyze the logs using pgBadger based on the format output by the cluster.
 ### For JSON Format Logs
 If the logs are in JSON format, use the `-f jsonlog` flag:
 ```
-swapnilsuryawanshi@MAC-CR9L20YFN6 pgbadger % pgbadger -f jsonlog postgresql.log -o postgresql_report.html
+swapnilsuryawanshi% pgbadger -f jsonlog postgresql.log -o postgresql_report.html
 [========================>] Parsed 1158967 bytes of 1158967 (100.00%), queries: 127, events: 16
 LOG: Ok, generating html report...
 ```
@@ -170,7 +170,7 @@ LOG: Ok, generating html report...
 ### For Standard Text Logs
 Use the `--prefix` flag to match the `log_line_prefix` configured in Step 1:
 ```
-swapnilsuryawanshi@MAC-CR9L20YFN6 pgbadger % pgbadger --prefix '%t [%p]: user=%u,db=%d,app=%a,client=%h' postgresql.log -o postgresql_report1.html
+swapnilsuryawanshi% pgbadger --prefix '%t [%p]: user=%u,db=%d,app=%a,client=%h' postgresql.log -o postgresql_report1.html
 [========================>] Parsed 1158967 bytes of 1158967 (100.00%), queries: 127, events: 16
 LOG: Ok, generating html report...
 ```
@@ -181,7 +181,7 @@ LOG: Ok, generating html report...
 To open the HTML report, look exactly where you have stored the files (e.g., the `pgbadger` directory). Click on the generated reports, such as **postgresql_report.html** or **postgresql_report1.html**, and they will open in your default web browser for interactive viewing.
 
 ```
-swapnilsuryawanshi@MAC-CR9L20YFN6 pgbadger % ls -l *.html
+swapnilsuryawanshi% ls -l *.html
 -rw-r--r--  1 swapnilsuryawanshi  staff  1614195 31 Mar 19:19 postgresql_report.html
 -rw-r--r--  1 swapnilsuryawanshi  staff  1614189 31 Mar 19:20 postgresql_report1.html
 ```
